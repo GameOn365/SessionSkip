@@ -1,6 +1,3 @@
-strings:
-  login: '&e%s joined the network.'
-  logout: '&e%s left the network.'
-delayedCheck:
-  enabled: false
-  seconds: 3
+listeners: [ '/192.168.128.4:1337' ]
+hostnames: []
+remoteips: [ '192.168.1.1' ]

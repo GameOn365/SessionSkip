@@ -1,6 +1,6 @@
-name: GlobalJoins
-main: net.gameon365.mc.plugins.bungee.globaljoins.GlobalJoins
-version: 4
+name: SessionSkip
+main: net.gameon365.mc.plugins.bungee.sessionskip.SessionSkip
+version: 1
 author: NickG365
 depends: ['BungeeYAML']
 #website: http://gameon365.net
