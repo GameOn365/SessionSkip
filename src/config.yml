@@ -1,3 +1,4 @@
+debug: true
 listeners: [ '/192.168.128.4:1337' ]
 hostnames: []
 remoteips: [ '192.168.1.1' ]

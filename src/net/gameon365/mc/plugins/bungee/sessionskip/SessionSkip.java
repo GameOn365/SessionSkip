@@ -2,7 +2,6 @@ package net.gameon365.mc.plugins.bungee.sessionskip;
 
 import java.util.Collection;
 import java.util.logging.Level;
-//import java.util.HashSet;
 
 import net.craftminecraft.bungee.bungeeyaml.pluginapi.ConfigurablePlugin;
 
@@ -12,6 +11,7 @@ import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.event.EventHandler;
 
 public class SessionSkip extends ConfigurablePlugin implements Listener {
+    protected boolean debug;
     protected Collection listeners;
     protected Collection hostnames;
     protected Collection remoteips;
@@ -19,9 +19,17 @@ public class SessionSkip extends ConfigurablePlugin implements Listener {
     @Override
     public void onEnable()
     {
+        this.debug = this.getConfig().getBoolean( "debug", true );
+        this.getProxy().getLogger().log( Level.INFO, "[SessionSkip] Debug output set to {0}.", debug);
+        
         this.listeners = this.getConfig().getList( "listeners" );
+        this.getProxy().getLogger().log( Level.INFO, "[SessionSkip] Loaded {0} listener rules.", this.listeners.size());
+        
         this.hostnames = this.getConfig().getList( "hostnames" );
+        this.getProxy().getLogger().log( Level.INFO, "[SessionSkip] Loaded {0} hostname rules.", this.hostnames.size());
+        
         this.remoteips = this.getConfig().getList( "remoteips" );
+        this.getProxy().getLogger().log( Level.INFO, "[SessionSkip] Loaded {0} remote IP rules.", this.remoteips.size());
         
         this.getProxy().getPluginManager().registerListener( this, this );
     }
@@ -29,6 +37,7 @@ public class SessionSkip extends ConfigurablePlugin implements Listener {
     @Override
     public void onDisable()
     {
+        this.debug = true;
         this.listeners = null;
         this.hostnames = null;
         this.remoteips = null;
@@ -39,33 +48,37 @@ public class SessionSkip extends ConfigurablePlugin implements Listener {
     {
         InitialHandler handler = (InitialHandler) e.getConnection();
         
-        this.getProxy().getLogger().log( Level.INFO, "Connection via listener: {0}", handler.getVirtualHost().toString() );
-        this.getProxy().getLogger().log( Level.INFO, "Connection via hostname: {0}", handler.getVirtualHost().getHostString() );
-        this.getProxy().getLogger().log( Level.INFO, "Connection from remote IP: {0}", handler.getAddress().getAddress().getHostAddress() );
+        if( this.debug )
+        {
+            this.getProxy().getLogger().log( Level.INFO, "[SessionSkip] Connection via listener: {0}", handler.getVirtualHost().toString() );
+            this.getProxy().getLogger().log( Level.INFO, "[SessionSkip] Connection via hostname: {0}", handler.getVirtualHost().getHostString() );
+            this.getProxy().getLogger().log( Level.INFO, "[SessionSkip] Connection from remote IP: {0}", handler.getAddress().getAddress().getHostAddress() );
+        }
         
-        
-        // handler.getVirtualHost().getAddress().toString() + Integer.toString( handler.getVirtualHost().getPort() )
         if( this.listeners.contains( handler.getVirtualHost().toString() ) )
         {
             handler.setOnlineMode( false );
-            this.getProxy().getLogger().log( Level.INFO, "Skipping session server authentication for player {0} ({1}) since listener matched {2}", new Object[]{ handler.getName(), handler.getAddress().toString(), handler.getVirtualHost().toString() } );
+            this.getProxy().getLogger().log( Level.INFO, "[SessionSkip] Skipping session server authentication for player {0} ({1}) since listener matched {2}", new Object[]{ handler.getName(), handler.getAddress().toString(), handler.getVirtualHost().toString() } );
             return;
         }
         
         if( this.hostnames.contains( handler.getVirtualHost().getHostString() ) )
         {
             handler.setOnlineMode( false );
-            this.getProxy().getLogger().log( Level.INFO, "Skipping session server authentication for player {0} ({1}) since hostname matched {2}", new Object[]{ handler.getName(), handler.getAddress().toString(), handler.getVirtualHost().getHostString() } );
+            this.getProxy().getLogger().log( Level.INFO, "[SessionSkip] Skipping session server authentication for player {0} ({1}) since hostname matched {2}", new Object[]{ handler.getName(), handler.getAddress().toString(), handler.getVirtualHost().getHostString() } );
             return;
         }
         
         if( this.remoteips.contains( handler.getAddress().getAddress().getHostAddress() ) )
         {
             handler.setOnlineMode( false );
-            this.getProxy().getLogger().log( Level.INFO, "Skipping session server authentication for player {0} ({1}) since remote IP matched {2}", new Object[]{ handler.getName(), handler.getAddress().toString(), handler.getAddress().getAddress().getHostAddress() } );
+            this.getProxy().getLogger().log( Level.INFO, "[SessionSkip] Skipping session server authentication for player {0} ({1}) since remote IP matched {2}", new Object[]{ handler.getName(), handler.getAddress().toString(), handler.getAddress().getAddress().getHostAddress() } );
             return;
         }
         
-        this.getProxy().getLogger().log( Level.INFO, "Authenticating player {0} ({1}) since no skip rules matched.", new Object[]{ handler.getName(), handler.getAddress().toString() } );
+        if( this.debug )
+        {
+            this.getProxy().getLogger().log( Level.INFO, "[SessionSkip] Authenticating player {0} ({1}) since no skip rules matched.", new Object[]{ handler.getName(), handler.getAddress().toString() } );
+        }
     }
 }
