@@ -5,7 +5,7 @@ import java.util.logging.Level;
 
 import net.craftminecraft.bungee.bungeeyaml.pluginapi.ConfigurablePlugin;
 
-import net.md_5.bungee.api.event.PlayerHandshakeEvent;
+import net.md_5.bungee.api.event.PreLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.event.EventHandler;
@@ -56,7 +56,7 @@ public class SessionSkip extends ConfigurablePlugin implements Listener
     }
     
     @EventHandler
-    public void onPlayerHandshakeEvent( PlayerHandshakeEvent e )
+    public void onAsyncPreLoginEvent( PreLoginEvent e )
     {
         InitialHandler handler = (InitialHandler) e.getConnection();
         
