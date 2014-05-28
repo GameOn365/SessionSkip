@@ -1,7 +1,8 @@
 SessionSkip
 -----------
-### Warning
-SessionSkip can allow players to log in as your staff if you do not configure it properly.  Do not use this plugin if you aren't 100% certain of what you're doing.
+### Warnings
+* SessionSkip can allow players to log in as your staff if you do not configure it properly.  Do not use this plugin if you aren't 100% certain of what you're doing.
+* If you use SessionSkip with a Minecraft version that supports UUIDs, it will cause an offline mode UUID to be used for any players who skip session server authentication.  If you change your name, your offline mode UUID will also change.
 
 ### Description
 SessionSkip is a simple BungeeCord plugin to skip authentication with the Minecraft session servers under certain conditions.
